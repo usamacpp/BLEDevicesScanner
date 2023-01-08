@@ -14,8 +14,11 @@
 		808603D3296A57470012B0FB /* BLEDevicesScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603D2296A57470012B0FB /* BLEDevicesScannerUITests.swift */; };
 		808603D5296A57470012B0FB /* BLEDevicesScannerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603D4296A57470012B0FB /* BLEDevicesScannerUITestsLaunchTests.swift */; };
 		808603E4296A576A0012B0FB /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603E3296A576A0012B0FB /* MainView.swift */; };
-		808603E6296A57750012B0FB /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603E5296A57750012B0FB /* ListView.swift */; };
+		808603E6296A57750012B0FB /* DevicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603E5296A57750012B0FB /* DevicesListView.swift */; };
 		808603E8296A57A40012B0FB /* DevicesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603E7296A57A40012B0FB /* DevicesManager.swift */; };
+		808603EB296B41D00012B0FB /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603EA296B41D00012B0FB /* DeviceCell.swift */; };
+		808603ED296B60C40012B0FB /* ServicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603EC296B60C40012B0FB /* ServicesListView.swift */; };
+		808603EF296B67FF0012B0FB /* CharsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808603EE296B67FF0012B0FB /* CharsListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,9 +49,12 @@
 		808603D2296A57470012B0FB /* BLEDevicesScannerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevicesScannerUITests.swift; sourceTree = "<group>"; };
 		808603D4296A57470012B0FB /* BLEDevicesScannerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevicesScannerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		808603E3296A576A0012B0FB /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		808603E5296A57750012B0FB /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
+		808603E5296A57750012B0FB /* DevicesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesListView.swift; sourceTree = "<group>"; };
 		808603E7296A57A40012B0FB /* DevicesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesManager.swift; sourceTree = "<group>"; };
 		808603E9296A58270012B0FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		808603EA296B41D00012B0FB /* DeviceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
+		808603EC296B60C40012B0FB /* ServicesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesListView.swift; sourceTree = "<group>"; };
+		808603EE296B67FF0012B0FB /* CharsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharsListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,7 +144,10 @@
 			isa = PBXGroup;
 			children = (
 				808603E3296A576A0012B0FB /* MainView.swift */,
-				808603E5296A57750012B0FB /* ListView.swift */,
+				808603E5296A57750012B0FB /* DevicesListView.swift */,
+				808603EA296B41D00012B0FB /* DeviceCell.swift */,
+				808603EC296B60C40012B0FB /* ServicesListView.swift */,
+				808603EE296B67FF0012B0FB /* CharsListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -281,9 +290,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				808603E6296A57750012B0FB /* ListView.swift in Sources */,
+				808603E6296A57750012B0FB /* DevicesListView.swift in Sources */,
 				808603E8296A57A40012B0FB /* DevicesManager.swift in Sources */,
 				808603E4296A576A0012B0FB /* MainView.swift in Sources */,
+				808603EB296B41D00012B0FB /* DeviceCell.swift in Sources */,
+				808603ED296B60C40012B0FB /* ServicesListView.swift in Sources */,
+				808603EF296B67FF0012B0FB /* CharsListView.swift in Sources */,
 				808603B8296A57460012B0FB /* BLEDevicesScannerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

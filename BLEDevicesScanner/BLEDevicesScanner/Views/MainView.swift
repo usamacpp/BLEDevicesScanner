@@ -13,7 +13,7 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack {
-            NavigationLink("BLE devices list", destination: ListView().environmentObject(devicesManager))
+            NavigationLink("BLE devices list", destination: DevicesListView().environmentObject(devicesManager))
         }.onAppear {
             startScan()
         }

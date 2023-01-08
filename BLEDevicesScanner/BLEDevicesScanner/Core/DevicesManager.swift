@@ -9,14 +9,6 @@ import Foundation
 import CoreBluetooth
 import Combine
 
-struct BLEDevice: Identifiable {
-    let id = UUID()
-    
-    let cbuuid: CBUUID
-    let localName: String
-    let peripheral: CBPeripheral
-}
-
 ///DevicesManager: a service class used by UI
 class DevicesManager: NSObject, ObservableObject {
     
@@ -24,6 +16,8 @@ class DevicesManager: NSObject, ObservableObject {
     
     private(set) var devicesDictionary = [CBUUID: CBPeripheral]()
     private let subjectDiscoveredDevices = PassthroughSubject<[CBPeripheral], Never>()
+    private let subjectDiscoveredServices = PassthroughSubject<CBPeripheral, Never>()
+    private let subjectDiscoveredChars = PassthroughSubject<CBService, Never>()
     public var cancellables = Set<AnyCancellable>()
     
     public func startScan() -> AnyPublisher<[CBPeripheral], Never> {
@@ -50,10 +44,14 @@ class DevicesManager: NSObject, ObservableObject {
         devicesDictionary.removeAll()
     }
     
-    public func getServices(forDevice: CBUUID) {
-        if let dev = devicesDictionary[forDevice] {
-            centralManager?.connect(dev)
-        }
+    public func getServices(forDevice dev: CBPeripheral) -> AnyPublisher<CBPeripheral, Never> {
+        centralManager?.connect(dev)
+        return subjectDiscoveredServices.eraseToAnyPublisher()
+    }
+    
+    public func getChars(forDevice dev: CBPeripheral, andService service: CBService) -> AnyPublisher<CBService, Never> {
+        dev.discoverCharacteristics(nil, for: service)
+        return subjectDiscoveredChars.eraseToAnyPublisher()
     }
 }
 
@@ -75,6 +73,28 @@ extension DevicesManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("did connect - ", peripheral)
+        
+        peripheral.delegate = self
         peripheral.discoverServices(nil)
+    }
+    
+    func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+        
+    }
+}
+
+extension DevicesManager: CBPeripheralDelegate {
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("did discover services - ", peripheral.services as Any)
+        
+        devicesDictionary[CBUUID(nsuuid: peripheral.identifier)] = peripheral
+        subjectDiscoveredServices.send(peripheral)
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        print("did discover chars - ", service.characteristics as Any)
+        
+        subjectDiscoveredChars.send(service)
     }
 }
