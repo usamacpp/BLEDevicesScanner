@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct BLEDevicesScannerApp: App {
+    let devmngr = DevicesManager()
+    
     var body: some Scene {
         WindowGroup {
-            MainView()
+            MainView().environmentObject(devmngr)
         }
     }
 }

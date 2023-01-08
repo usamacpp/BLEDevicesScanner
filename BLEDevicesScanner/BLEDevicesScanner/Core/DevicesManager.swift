@@ -20,15 +20,11 @@ struct BLEDevice: Identifiable {
 ///DevicesManager: a service class used by UI
 class DevicesManager: NSObject, ObservableObject {
     
-    public static let shared = DevicesManager()
-    
     private var centralManager: CBCentralManager?
     
     private(set) var devicesDictionary = [CBUUID: CBPeripheral]()
     private let subjectDiscoveredDevices = PassthroughSubject<[CBPeripheral], Never>()
     public var cancellables = Set<AnyCancellable>()
-    
-    private override init() {}
     
     public func startScan() -> AnyPublisher<[CBPeripheral], Never> {
         if centralManager != nil {

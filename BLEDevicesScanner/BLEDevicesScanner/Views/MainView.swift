@@ -9,16 +9,17 @@ import SwiftUI
 import Combine
 
 struct MainView: View {
-    private let devicesManager = DevicesManager.shared
-//    private var cancellables = Set<AnyCancellable>()
+    @EnvironmentObject var devicesManager: DevicesManager
     
     var body: some View {
         NavigationStack {
             NavigationLink("BLE devices list", destination: ListView().environmentObject(devicesManager))
+        }.onAppear {
+            startScan()
         }
     }
     
-    init() {
+    private func startScan() {
         devicesManager.startScan()
         .sink { devs in
             print("sink#1 dev - ", devs.count)

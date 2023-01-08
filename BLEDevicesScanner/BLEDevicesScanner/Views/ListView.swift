@@ -10,7 +10,7 @@ import Combine
 import CoreBluetooth
 
 struct ListView: View {
-    var devicesManager = DevicesManager.shared
+    @EnvironmentObject var devicesManager: DevicesManager
     @State var list: [CBPeripheral]?
     
     var body: some View {
@@ -32,7 +32,7 @@ struct ListView: View {
         devicesManager.continueScan().sink { devs in
             print("sink#2 devs - ", devs.count)
             list = devs
-        }.store(in: &DevicesManager.shared.cancellables)
+        }.store(in: &devicesManager.cancellables)
     }
 }
 
