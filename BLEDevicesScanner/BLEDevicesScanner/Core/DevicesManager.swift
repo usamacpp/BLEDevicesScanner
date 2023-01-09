@@ -20,6 +20,12 @@ class DevicesManager: NSObject, ObservableObject {
     private let subjectDiscoveredChars = PassthroughSubject<CBService, Never>()
     public var cancellables = Set<AnyCancellable>()
     
+    deinit {
+        cancellables.forEach { cncl in
+            cncl.cancel()
+        }
+    }
+    
     public func startScan() -> AnyPublisher<[CBPeripheral], Never> {
         if centralManager != nil {
             stop()
