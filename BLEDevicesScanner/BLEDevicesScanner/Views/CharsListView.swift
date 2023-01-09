@@ -21,7 +21,7 @@ struct CharsListView: View {
             }
         }.onAppear {
             discoverChars()
-        }
+        }.navigationTitle(Text("Chars"))
     }
     
     private func discoverChars() {

@@ -23,7 +23,7 @@ struct ServicesListView: View {
             }
         }.onAppear {
             discoverServices()
-        }
+        }.navigationTitle(Text("Services"))
     }
     
     private func discoverServices() {
