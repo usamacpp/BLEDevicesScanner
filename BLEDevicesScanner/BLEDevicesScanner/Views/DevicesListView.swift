@@ -21,7 +21,6 @@ struct DevicesListView: View {
                     DeviceCell(dev: dev).environmentObject(devicesManager)
                 }
             }
-            
         }.navigationTitle(Text("devices"))
             .onAppear {
                 continueScan()
@@ -29,6 +28,7 @@ struct DevicesListView: View {
     }
     
     private func continueScan() {
+        devList = devicesManager.devicesDictionary.values.map {$0}
         devicesManager.continueScan().sink { devs in
             print("sink#2 devs - ", devs.count)
             devList = devs
