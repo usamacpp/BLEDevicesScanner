@@ -13,6 +13,7 @@ struct CharsListView: View {
     public let dev: CBPeripheral
     public let service: CBService
     @State private var chars: [CBCharacteristic]?
+    @State private var error: BLEScanError?
     
     var body: some View {
         VStack {
@@ -21,7 +22,7 @@ struct CharsListView: View {
             
             if let chars {
                 List {
-                    ForEach(chars ?? [], id: \.self) { char in
+                    ForEach(chars, id: \.self) { char in
                         Text(char.description)
                     }
                 }
@@ -30,13 +31,26 @@ struct CharsListView: View {
             }
         }.onAppear {
             discoverChars()
+        }.onDisappear {
+            devicesManager.cleanLastCancellable()
         }.navigationTitle(Text("Chars"))
     }
     
     private func discoverChars() {
-        devicesManager.getChars(forDevice: dev, andService: service).sink { srvc in
+//        devicesManager.getChars(forDevice: dev, andService: service).sink { srvc in
+//            chars = srvc.characteristics
+//        }.store(in: &devicesManager.cancellables)
+        
+        devicesManager.getChars(forDevice: dev, andService: service).sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure(let error):
+                self.error = error
+            case .finished:
+                print("fnished")
+            }
+        }, receiveValue: { srvc in
             chars = srvc.characteristics
-        }.store(in: &devicesManager.cancellables)
+        }).store(in: &devicesManager.cancellables)
     }
 }
 

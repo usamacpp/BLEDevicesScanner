@@ -16,8 +16,15 @@ struct ServicesListView: View {
     @State private var error: BLEScanError?
     
     var body: some View {
-        if error != nil {
-            Text("connect failed")
+        if let error {
+            switch error {
+            case .failedConnect:
+                Text("connect failed")
+            case .failedDiscoverServices:
+                Text("No services found!")
+            case .failedDiscoverChars:
+                Text("Unknown error!")
+            }
         } else {
             VStack {
                 Text(dev.description).background(Color.cyan).padding(5)
@@ -33,22 +40,47 @@ struct ServicesListView: View {
                     }
                 }
             }.onAppear {
-                discoverServices()
+                connectDevice()
+            }.onDisappear {
+                if let error {
+                    if error == .failedConnect {
+                        devicesManager.cleanLastCancellable()
+                    } else {
+                        devicesManager.cleanLast2Cancellables()
+                    }
+                } else {
+                    devicesManager.cleanLast2Cancellables()
+                }
             }.navigationTitle(Text("Services"))
         }
     }
     
-    private func discoverServices() {
-        devicesManager.getServices(forDevice: dev).sink(receiveCompletion: { completion in
+    private func connectDevice() {
+        devicesManager.connect(withDevice: dev).sink { completion in
             switch completion {
             case .failure(let error):
                 self.error = error
             case .finished:
                 print("fnished")
             }
-        }, receiveValue: { peripheral in
+        } receiveValue: { peripheral in
+            error = nil
+            discoverServices()
+        }.store(in: &devicesManager.cancellables)
+
+    }
+    
+    private func discoverServices() {
+        devicesManager.getServices(forDevice: dev).sink { completion in
+            switch completion {
+            case .failure(let error):
+                self.error = error
+            case .finished:
+                print("fnished")
+            }
+        } receiveValue: { peripheral in
             services = peripheral.services
-        }).store(in: &devicesManager.cancellables)
+        }.store(in: &devicesManager.cancellables)
     }
 }
 

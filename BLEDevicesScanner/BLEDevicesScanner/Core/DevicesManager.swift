@@ -20,9 +20,10 @@ class DevicesManager: NSObject, ObservableObject {
     
     private(set) var devicesDictionary = [CBUUID: CBPeripheral]()
     private let subjectDiscoveredDevices = PassthroughSubject<[CBPeripheral], Never>()
+    private let subjectConnectDevice = PassthroughSubject<CBPeripheral, BLEScanError>()
     private let subjectDiscoveredServices = PassthroughSubject<CBPeripheral, BLEScanError>()
-    private let subjectDiscoveredChars = PassthroughSubject<CBService, Never>()
-    public var cancellables = Set<AnyCancellable>()
+    private let subjectDiscoveredChars = PassthroughSubject<CBService, BLEScanError>()
+    public var cancellables = Array<AnyCancellable>()
     
     public private(set) var connectedDevice: CBPeripheral?
     
@@ -56,12 +57,17 @@ class DevicesManager: NSObject, ObservableObject {
         devicesDictionary.removeAll()
     }
     
-    public func getServices(forDevice dev: CBPeripheral) -> AnyPublisher<CBPeripheral, BLEScanError> {
+    public func connect(withDevice dev: CBPeripheral) -> AnyPublisher<CBPeripheral, BLEScanError> {
         centralManager?.connect(dev)
+        return subjectConnectDevice.eraseToAnyPublisher()
+    }
+    
+    public func getServices(forDevice dev: CBPeripheral) -> AnyPublisher<CBPeripheral, BLEScanError> {
+        connectedDevice?.discoverServices(nil)
         return subjectDiscoveredServices.eraseToAnyPublisher()
     }
     
-    public func getChars(forDevice dev: CBPeripheral, andService service: CBService) -> AnyPublisher<CBService, Never> {
+    public func getChars(forDevice dev: CBPeripheral, andService service: CBService) -> AnyPublisher<CBService, BLEScanError> {
         dev.discoverCharacteristics(nil, for: service)
         return subjectDiscoveredChars.eraseToAnyPublisher()
     }
@@ -72,6 +78,18 @@ class DevicesManager: NSObject, ObservableObject {
             centralManager?.cancelPeripheralConnection(cdev)
             connectedDevice = nil
         }
+    }
+    
+    public func cleanLastCancellable() {
+//        if let last = cancellables.last {
+//            last.cancel()
+//            cancellables.removeLast()
+//        }
+    }
+    
+    public func cleanLast2Cancellables() {
+        cleanLastCancellable()
+        cleanLastCancellable()
     }
 }
 
@@ -98,13 +116,14 @@ extension DevicesManager: CBCentralManagerDelegate {
         connectedDevice = peripheral
         connectedDevice?.delegate = self
         connectedDevice?.discoverServices(nil)
+        subjectConnectDevice.send(peripheral)
     }
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         print("did fail to connect")
         
         disconnectCurrentDevice()
-        subjectDiscoveredServices.send(completion: .failure(.failedConnect))
+        subjectConnectDevice.send(completion: .failure(.failedConnect))
     }
 }
 
@@ -123,6 +142,11 @@ extension DevicesManager: CBPeripheralDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         print("did discover chars - ", service.characteristics as Any)
+        
+        guard error == nil else {
+            subjectDiscoveredChars.send(completion: .failure(.failedDiscoverChars))
+            return
+        }
         
         subjectDiscoveredChars.send(service)
     }
