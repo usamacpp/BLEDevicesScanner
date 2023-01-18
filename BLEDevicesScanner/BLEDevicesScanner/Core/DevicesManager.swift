@@ -65,6 +65,14 @@ class DevicesManager: NSObject, ObservableObject {
         dev.discoverCharacteristics(nil, for: service)
         return subjectDiscoveredChars.eraseToAnyPublisher()
     }
+    
+    public func disconnectCurrentDevice() {
+        if let cdev = connectedDevice {
+            connectedDevice?.delegate = nil
+            centralManager?.cancelPeripheralConnection(cdev)
+            connectedDevice = nil
+        }
+    }
 }
 
 extension DevicesManager: CBCentralManagerDelegate {
@@ -94,7 +102,8 @@ extension DevicesManager: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         print("did fail to connect")
-        connectedDevice = nil
+        
+        disconnectCurrentDevice()
         subjectDiscoveredServices.send(completion: .failure(.failedConnect))
     }
 }
