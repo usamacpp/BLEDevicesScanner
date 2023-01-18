@@ -17,8 +17,12 @@ struct DevicesListView: View {
         Spacer(minLength: 0)
         VStack {
             List {
-                ForEach(devList ?? [], id: \.self) { dev in
-                    DeviceCell(dev: dev).environmentObject(devicesManager)
+                if let devList {
+                    ForEach(devList, id: \.self) { dev in
+                        DeviceCell(dev: dev).environmentObject(devicesManager)
+                    }
+                } else {
+                    Text("No devies found!")
                 }
             }
         }.navigationTitle(Text("devices"))

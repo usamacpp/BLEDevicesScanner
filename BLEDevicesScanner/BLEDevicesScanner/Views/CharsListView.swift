@@ -18,10 +18,15 @@ struct CharsListView: View {
         VStack {
             Text(dev.description).background(Color.cyan).padding(5)
             Text(service.description).background(Color.cyan).padding(5)
-            List {
-                ForEach(chars ?? [], id: \.self) { char in
-                    Text(char.description)
+            
+            if let chars {
+                List {
+                    ForEach(chars ?? [], id: \.self) { char in
+                        Text(char.description)
+                    }
                 }
+            } else {
+                Text("No chars found!")
             }
         }.onAppear {
             discoverChars()

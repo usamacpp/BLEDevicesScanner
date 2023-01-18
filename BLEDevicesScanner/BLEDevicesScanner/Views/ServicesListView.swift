@@ -22,10 +22,14 @@ struct ServicesListView: View {
             VStack {
                 Text(dev.description).background(Color.cyan).padding(5)
                 List {
-                    ForEach(services ?? [], id: \.self) { service in
-                        NavigationLink(destination: CharsListView(dev: dev, service: service).environmentObject(devicesManager)) {
-                            Text(service.description)
+                    if let services {
+                        ForEach(services, id: \.self) { service in
+                            NavigationLink(destination: CharsListView(dev: dev, service: service).environmentObject(devicesManager)) {
+                                Text(service.description)
+                            }
                         }
+                    } else {
+                        Text("No services found!")
                     }
                 }
             }.onAppear {
