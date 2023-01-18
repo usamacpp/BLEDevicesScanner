@@ -15,7 +15,7 @@ struct DeviceCell: View {
     var body: some View {
         if let dev {
             NavigationLink(destination: ServicesListView(dev: dev).environmentObject(devicesManager)) {
-                Text(dev.name ?? "N/A" + " - " + dev.identifier.uuidString)
+                Text(dev.description)
             }
         }
     }

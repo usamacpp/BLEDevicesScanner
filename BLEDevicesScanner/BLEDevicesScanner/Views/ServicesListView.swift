@@ -19,10 +19,13 @@ struct ServicesListView: View {
         if error != nil {
             Text("connect failed")
         } else {
-            List {
-                ForEach(services ?? [], id: \.self) { service in
-                    NavigationLink(destination: CharsListView(dev: dev, service: service).environmentObject(devicesManager)) {
-                        Text(service.description)
+            VStack {
+                Text(dev.description).background(Color.cyan).padding(5)
+                List {
+                    ForEach(services ?? [], id: \.self) { service in
+                        NavigationLink(destination: CharsListView(dev: dev, service: service).environmentObject(devicesManager)) {
+                            Text(service.description)
+                        }
                     }
                 }
             }.onAppear {

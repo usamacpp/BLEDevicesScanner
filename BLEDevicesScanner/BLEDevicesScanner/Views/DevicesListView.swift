@@ -22,9 +22,12 @@ struct DevicesListView: View {
                 }
             }
         }.navigationTitle(Text("devices"))
-            .onAppear {
-                continueScan()
+        .onAppear {
+            if devicesManager.connectedDevice != nil {
+                devicesManager.disconnectCurrentDevice()
             }
+            continueScan()
+        }
     }
     
     private func continueScan() {

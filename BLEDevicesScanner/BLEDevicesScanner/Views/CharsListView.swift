@@ -15,9 +15,13 @@ struct CharsListView: View {
     @State private var chars: [CBCharacteristic]?
     
     var body: some View {
-        List {
-            ForEach(chars ?? [], id: \.self) { char in
-                Text(char.description)
+        VStack {
+            Text(dev.description).background(Color.cyan).padding(5)
+            Text(service.description).background(Color.cyan).padding(5)
+            List {
+                ForEach(chars ?? [], id: \.self) { char in
+                    Text(char.description)
+                }
             }
         }.onAppear {
             discoverChars()
